@@ -2,12 +2,9 @@ const express = require("express")
 const router = express.Router()
 const User = require('../models/user')
 const bcrypt = require('bcrypt')
-const session = require('express-session');
 
 
-router.get("/", async (req, res) => {
-  res.render("index.ejs")
-})
+
 
 router.get("/sign-up", (req, res) => {
   res.render("auth/sign-up.ejs")
@@ -58,10 +55,20 @@ router.post("/sign-in", async (req, res) => {
     return res.send("Password Incorrect, please try again")
   }
 
-  
+  req.session.user = {
+    username: userInDatabase.username,
+    _id: userInDatabase._id
+  }
+
+  res.redirect("/")
 
 })
 
+router.get("/sign-out",(req,res)=>{
+  // destroys the session and logs out the user
+  req.session.destroy()
+  res.redirect("/")
+})
 
 
 

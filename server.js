@@ -52,7 +52,10 @@ app.use("/auth",authController)
 app.use("/actors",actorsController)
 
 app.get("/", async (req, res) => {
-  res.render("index.ejs")
+  console.log(req.session.user)
+  res.render("index.ejs",
+    {user:req.session.user}
+  )
 })
 
 
