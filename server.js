@@ -7,8 +7,10 @@ const methodOverride = require("method-override");
 const morgan = require("morgan");
 require('dotenv').config()
 const mongoose = require("mongoose")
+const User = require("./models/user")
+const authController = require('./controllers/auth')
 
-
+const actorsController = require('./controllers/actors')
 
 
 // =======================
@@ -29,9 +31,15 @@ mongoose.connect(process.env.MONGODB_URI)
 
 
 
+
+
 // =======================
 // 4. ROUTES
 // =======================
+
+app.use("/auth",authController)
+
+app.use("/actors",actorsController)
 
 
 
