@@ -37,6 +37,10 @@ router.post("/sign-up",async(req,res)=>{
 
 })
 
+router.get('/sign-in',(req,res)=>{
+  res.render("auth/sign-in.ejs")
+})
+
   
   
 
