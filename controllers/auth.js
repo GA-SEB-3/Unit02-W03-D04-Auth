@@ -2,21 +2,23 @@ const express = require("express")
 const router = express.Router()
 const User = require('../models/user')
 const bcrypt = require('bcrypt')
+const session = require('express-session');
 
-router.get("/", async(req,res)=>{
-    res.render("index.ejs")
-  })
 
-router.get("/sign-up",(req,res)=>{
-    res.render("auth/sign-up.ejs")
+router.get("/", async (req, res) => {
+  res.render("index.ejs")
 })
 
-router.post("/sign-up",async(req,res)=>{
+router.get("/sign-up", (req, res) => {
+  res.render("auth/sign-up.ejs")
+})
+
+router.post("/sign-up", async (req, res) => {
   console.log(req.body)
-  const userInDatabase = await User.findOne({username:req.body.username})
+  const userInDatabase = await User.findOne({ username: req.body.username })
 
   // check if the username is already taken
-  if(userInDatabase){
+  if (userInDatabase) {
     return res.send("Username already taken")
   }
 
@@ -27,8 +29,8 @@ router.post("/sign-up",async(req,res)=>{
 
   console.log("OLD PASSWORD: ", req.body.password)
 
-  const hashedPassword = bcrypt.hashSync(req.body.password,10)
-  console.log("NEW PASSWORD: ",hashedPassword)
+  const hashedPassword = bcrypt.hashSync(req.body.password, 10)
+  console.log("NEW PASSWORD: ", hashedPassword)
   req.body.password = hashedPassword
 
   const createdUser = await User.create(req.body)
@@ -37,11 +39,30 @@ router.post("/sign-up",async(req,res)=>{
 
 })
 
-router.get('/sign-in',(req,res)=>{
+router.get('/sign-in', (req, res) => {
   res.render("auth/sign-in.ejs")
 })
 
+router.post("/sign-in", async (req, res) => {
+
+  const userInDatabase = await User.findOne({ username: req.body.username });
+  if (!userInDatabase) {
+    return res.send("Login failed. Please try again.");
+  }
+
+  const validPassword = bcrypt.compareSync(
+    req.body.password,
+    userInDatabase.password
+  )
+  if(!validPassword){
+    return res.send("Password Incorrect, please try again")
+  }
+
   
-  
+
+})
+
+
+
 
 module.exports = router

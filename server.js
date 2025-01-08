@@ -9,6 +9,8 @@ require('dotenv').config()
 const mongoose = require("mongoose")
 const User = require("./models/user")
 const authController = require('./controllers/auth')
+const session = require('express-session');
+
 
 const actorsController = require('./controllers/actors')
 
@@ -19,6 +21,14 @@ const actorsController = require('./controllers/actors')
 app.use(express.urlencoded({ extended: false })); // parses the request body. Needed for the req.body
 app.use(methodOverride("_method")); // Will change the methods for
 app.use(morgan("dev")); // Logs the requests in the terminal
+
+app.use(
+  session({
+    secret: process.env.SESSION_SECRET,
+    resave: false,
+    saveUninitialized: true,
+  })
+)
 
 
 // =======================
@@ -41,6 +51,9 @@ app.use("/auth",authController)
 
 app.use("/actors",actorsController)
 
+app.get("/", async (req, res) => {
+  res.render("index.ejs")
+})
 
 
 
